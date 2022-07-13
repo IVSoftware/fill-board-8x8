@@ -18,6 +18,17 @@ namespace fill_board_8x8
             IterateBoard(initImage);
         }
 
+        void IterateBoard(Action<int, int> action)
+        {
+            for (int column = 0; column < 8; column++)
+            {
+                for (int row = 0; row < 8; row++)
+                {
+                    action(column, row);
+                }
+            }
+        }
+
         private void addSquare(int column, int row)
         {
             var color = ((column + row) % 2) == 0 ? Color.White : Color.Black;
@@ -40,39 +51,37 @@ namespace fill_board_8x8
         private void initImage(int column, int row)
         {
             var square = (Square)tableLayoutPanel.GetControlFromPosition(column, row);
-            switch (row)
+            if (square.BackColor == Color.Black)
             {
-                case 0:
-                case 1:
-                    square.Piece = Piece.Black;
-                    break;
-                case 6:
-                case 7:
-                    square.Piece = Piece.Red;
-                    break;
-                default:
-                    square.Piece = Piece.None;
-                    break;
-            }
-        }
-
-        void IterateBoard(Action<int, int> action)
-        {
-            for (int column = 0; column < 8; column++)
-            {
-                for (int row = 0; row < 8; row++)
+                switch (row)
                 {
-                    action(column, row);
+                    case 0:
+                    case 1:
+                    case 2:
+                        square.Piece = Piece.Black;
+                        break;
+                    case 5:
+                    case 6:
+                    case 7:
+                        square.Piece = Piece.Red;
+                        break;
+                    default:
+                        square.Piece = Piece.None;
+                        break;
                 }
             }
         }
 
-        private void onSquareClicked(object sender, EventArgs e) =>
-            MessageBox.Show($"Clicked: {sender}");
-
-        private void onSquareMouseHover(object sender, EventArgs e) =>
-            _tt.SetToolTip((Control)sender, sender.ToString());
-
+        private void onSquareClicked(object sender, EventArgs e)
+        {
+            var square = (Square)sender;
+            MessageBox.Show($"Clicked: {square}");
+        }
+        private void onSquareMouseHover(object sender, EventArgs e)
+        {
+            var square = (Square)sender;
+            _tt.SetToolTip(square, square.ToString());
+        }
         ToolTip _tt = new ToolTip();
     }
     class Square : PictureBox // Gives more visual control than Button
